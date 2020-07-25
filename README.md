@@ -7,14 +7,14 @@ This README is a container for the notes I'm keeping while going through the vid
 
 ### **manifest.json**
 Requirement for PWA. Object contains essential information about PWA.
-- name: App name that will appear on splash screen
-- short_name: App name that will appear on device Home Screen
-- start_url: Route that app will initialize at
-- display: Set to standalone. This will enable app to appear without the browser bar and look more like a native app
-- background_color: Color of splash screen
-- theme_color: Tints UI elements with this color
-- orientation: Orientation app initially opens to, in this case it's portrait
-- icons: Array of objects pointing to image assets. Used for Home Screen and splash screen icons.
+- `name`: App name that will appear on splash screen
+- `short_name`: App name that will appear on device Home Screen
+- `start_url`: Route that app will initialize at
+- `display`: Set to standalone. This will enable app to appear without the browser bar and look more like a native app
+- `background_color`: Color of splash screen
+- `theme_color`: Tints UI elements with this color
+- `orientation`: Orientation app initially opens to, in this case it's portrait
+- `icons`: Array of objects pointing to image assets. Used for Home Screen and splash screen icons.
 
 ### **Android Emulator**
 1. Open Android Studio
@@ -37,13 +37,14 @@ Super important in making a PWA behave like a native app. They do this by perfor
 The main app js is tightly coupled with the DOM content. Service workers are js files that run on a separate thread from normal js files. They run in another part of the browser and are *isolated* from the html. Service workers do not interact directly with the DOM. They run in the background (*a background process*) and even run when the app is closed. They listen and react to different events in the browser.
 
 ### **Service Worker Lifecycle**
-You want to place your service worker js file in the root directory of your project so that it can access all the files in your project. If placed in a subdirectory, the service worker scope is only within that subdirectory (so...not good). 
+You want to place your service worker js file in the root directory of your project so that it can access all the files in your project. If placed in a subdirectory, the service worker scope is only within that subdirectory (so...not good). Events include: `install, activate, fetch`.
 1. Register the service worker (sw.js) with the browser. You do this by registering service worker in the main app js file (app.js). This tells the browser that sw.js is a service worker and needs to run on the separate thread from the rest of the app.
-1. The browser fires the *install event* (a lifecycle event), which installs the service worker. This install event only fires once, when the service worker is registered.
-    - We can listen for the *install event* in the service worker itself and perform an action (e.g. cache available assets for potential offline use later).
-1. After the service worker is registered, the service worker becomes active and the browser will fire an *active event*. The service worker can listen for this event as well.
+1. The browser fires the `install event` (a lifecycle event), which installs the service worker. This install event only fires once, when the service worker is registered.
+    - We can listen for the `install event` in the service worker itself and perform an action (e.g. cache available assets for potential offline use later).
+1. After the service worker is registered, the service worker becomes active and the browser will fire an `activate event`. The service worker can listen for this event as well.
     - Once the service worker is active, it can access all the files within its scope and listen for events. This includes fetch/http requests.
-1. When page is reloaded/refreshed, the service worker is still registered and won't re-install. But if changes have been made to service worker file since the last page load, then the service worker will be re-installed. However, the old service worker will remain active (the new service worker remains *in waiting* status) until all instances of the app are closed (e.g. app is closed or all tabs are closed in the browser). At that point, the new service worker will become active at the next app open.
+1. When page is reloaded/refreshed, the service worker is still registered and won't re-install. But if changes have been made to service worker file since the last page load, then the service worker will be re-installed. However, the old service worker will remain active (the new service worker remains **in waiting** status) until all instances of the app are closed (e.g. app is closed or all tabs are closed in the browser). At that point, the new service worker will become active at the next app open.
+1. `Fetch event` is another type of event that the service worker can listen for. The service worker is another layer between the app and the server. This is useful when data is cached in the browser to provide a quicker experience for the user, instead of waiting for a request to come back from the server the app can used cached assets/data. This is also useful for when the app is opened offline, to provide (some) usability when not connected to the network.
 
 ### **Service Worker Dev Options**
 - In Chrome Inspector, under Application tab: enabled "Update on Reload" option for Service Worker changes. This is to help streamline development and prevent having to close application every time a change is made to sw.js to implement changes.
