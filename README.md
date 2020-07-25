@@ -20,6 +20,11 @@ Requirement for PWA. Object contains essential information about PWA.
 1. Open Android Studio
 1. Open Chrome browser
 1. Proxy to development server using: `http://127.0.0.1:5500/`
+1. After requirements for 'Add Home Screen Banner' are met ([see criteria here](https://web.dev/install-criteria/)), proxy address `http://127.0.0.1:5500/` will not be enough to check that the banner feature works on the emulator. Do the following to address this issue:
+    - Service workers require `https` protocol to run, and the development proxy does not provide this protocol.
+    - To fix this so that we can use the service worker, go to three dots in Chrome inspector (next to settings gear) and go down to 'More Tools' --> 'Remote Devices' or go to [chrome://inspect/#devices](chrome://inspect/#devices). Chrome should already have detected the emulator.
+    - Enable 'Port Forwarding' and add rule (Port: `5500`, IP address and port: `localhost:5500`)
+    - Go back to the device emulator and delete any instances of the app and close all browser window/tabs with the app. Re-open Chrome in the emulator. For the web address, replace `http://127.0.0.1:5500/` with `localhost:5500` and the banner should 
 
 ### **iOS Notes**
 Safari on iOS devices will use a screenshot of the web app as the icon image if the app is added to the Home Screen. To bypass this behavior, the following lines were added to each html page `<head>`:
