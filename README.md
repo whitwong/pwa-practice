@@ -5,6 +5,17 @@ PWA Tutorial by The Net Ninja on Youtube: https://www.youtube.com/channel/UCW5Ye
 
 This README is a container for the notes I'm keeping while going through the video tutorials.
 
+### **manifest.json**
+Requirement for PWA. Object contains essential information about PWA.
+- name: App name that will appear on splash screen
+- short_name: App name that will appear on device Home Screen
+- start_url: Route that app will initialize at
+- display: Set to standalone. This will enable app to appear without the browser bar and look more like a native app
+- background_color: Color of splash screen
+- theme_color: Tints UI elements with this color
+- orientation: Orientation app initially opens to, in this case it's portrait
+- icons: Array of objects pointing to image assets. Used for Home Screen and splash screen icons.
+
 ### **Android Emulator**
 1. Open Android Studio
 1. Open Chrome browser
@@ -35,4 +46,7 @@ You want to place your service worker js file in the root directory of your proj
 1. When page is reloaded/refreshed, the service worker is still registered and won't re-install. But if changes have been made to service worker file since the last page load, then the service worker will be re-installed. However, the old service worker will remain active (the new service worker remains *in waiting* status) until all instances of the app are closed (e.g. app is closed or all tabs are closed in the browser). At that point, the new service worker will become active at the next app open.
 
 ### **Service Worker Dev Options**
-In Chrome Inspector, under Application tab: enabled "Update on Reload" option for Service Worker changes. This is to help streamline development and prevent having to close application every time a change is made to sw.js to implement changes.
+- In Chrome Inspector, under Application tab: enabled "Update on Reload" option for Service Worker changes. This is to help streamline development and prevent having to close application every time a change is made to sw.js to implement changes.
+- Chrome Lighthouse Audit: Audit/Lighthouse option in Inspector. Check 'Progressive Web App' and 'Generate Report' and Chrome will perform audit of application 🎉
+    - Useful tool to use as a checklist to make sure app meets PWA requirements
+    - Good practice to audit app periodically 
