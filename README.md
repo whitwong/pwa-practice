@@ -33,3 +33,6 @@ You want to place your service worker js file in the root directory of your proj
 1. After the service worker is registered, the service worker becomes active and the browser will fire an *active event*. The service worker can listen for this event as well.
     - Once the service worker is active, it can access all the files within its scope and listen for events. This includes fetch/http requests.
 1. When page is reloaded/refreshed, the service worker is still registered and won't re-install. But if changes have been made to service worker file since the last page load, then the service worker will be re-installed. However, the old service worker will remain active (the new service worker remains *in waiting* status) until all instances of the app are closed (e.g. app is closed or all tabs are closed in the browser). At that point, the new service worker will become active at the next app open.
+
+### **Service Worker Dev Options**
+In Chrome Inspector, under Application tab: enabled "Update on Reload" option for Service Worker changes. This is to help streamline development and prevent having to close application every time a change is made to sw.js to implement changes.
