@@ -48,13 +48,16 @@ You want to place your service worker js file in the root directory of your proj
     - We can listen for the `install event` in the service worker itself and perform an action (e.g. cache available assets for potential offline use later).
     - Generally want to cache the core resources that make up the user interface. These are static assets like the core html, static images, logo, core/static css, etc. This is also called the 'app shell'.
     - Shell model approach to PWAs: Where the shell is the core layout and styling. 
-    - A good place to cache these assets is at the `install event`.
+    - A good place to pre-cache these assets is at the `install event`.
     - Assets are requests (aka urls) made to the server.
     - What is stored in the cache? Keys = requests & Values = responses from the server.
 1. After the service worker is registered, the service worker becomes active and the browser will fire an `activate event`. The service worker can listen for this event as well.
     - Once the service worker is active, it can access all the files within its scope and listen for events. This includes fetch/http requests.
 1. When page is reloaded/refreshed, the service worker is still registered and won't re-install. But if changes have been made to service worker file since the last page load, then the service worker will be re-installed. However, the old service worker will remain active (the new service worker remains **in waiting** status) until all instances of the app are closed (e.g. app is closed or all tabs are closed in the browser). At that point, the new service worker will become active at the next app open.
 1. `Fetch event` is another type of event that the service worker can listen for. The service worker is another layer between the app and the server. This is useful when data is cached in the browser to provide a quicker experience for the user, instead of waiting for a request to come back from the server the app can used cached assets/data. This is also useful for when the app is opened offline, to provide (some) usability when not connected to the network.
+    - Intercept fetch requests to the server and check to see if there are pre-cached assets in the `fetch event` that match the requst. 
+    - If there is a match, pause request to the server and return the cached resource instead. 
+    - If there isn't a match, resume request to server.
 
 
 ### **Service Worker Dev Options in Chrome**
