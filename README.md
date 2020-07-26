@@ -22,7 +22,7 @@ Requirement for PWA. Object contains essential information about PWA.
 1. Proxy to development server using: `http://127.0.0.1:5500/`
 1. After requirements for 'Add Home Screen Banner' are met ([see criteria here](https://web.dev/install-criteria/)), proxy address `http://127.0.0.1:5500/` will not be enough to check that the banner feature works on the emulator. Do the following to address this issue:
     - Service workers require `https` protocol to run, and the development proxy does not provide this protocol.
-    - To fix this so that we can use the service worker, go to three dots in Chrome inspector (next to settings gear) and go down to 'More Tools' --> 'Remote Devices' or go to [chrome://inspect/#devices](chrome://inspect/#devices). Chrome should already have detected the emulator.
+    - To fix this so that we can use the service worker, go to three dots in Chrome Dev Tools (next to settings gear) and go down to 'More Tools' --> 'Remote Devices' or go to [chrome://inspect/#devices](chrome://inspect/#devices). Chrome should already have detected the emulator.
     - Enable 'Port Forwarding' and add rule (Port: `5500`, IP address and port: `localhost:5500`)
     - Go back to the device emulator and delete any instances of the app and close all browser window/tabs with the app. Re-open Chrome in the emulator. For the web address, replace `http://127.0.0.1:5500/` with `localhost:5500` and the banner should 
 
@@ -46,16 +46,24 @@ You want to place your service worker js file in the root directory of your proj
 1. Register the service worker (sw.js) with the browser. You do this by registering service worker in the main app js file (app.js). This tells the browser that sw.js is a service worker and needs to run on the separate thread from the rest of the app.
 1. The browser fires the `install event` (a lifecycle event), which installs the service worker. This install event only fires once, when the service worker is registered.
     - We can listen for the `install event` in the service worker itself and perform an action (e.g. cache available assets for potential offline use later).
+    - Generally want to cache the core resources that make up the user interface. These are static assets like the core html, static images, logo, core/static css, etc. This is also called the 'app shell'.
+    - Shell model approach to PWAs: Where the shell is the core layout and styling. 
+    - A good place to cache these assets is at the `install event`.
+    - Assets are requests (aka urls) made to the server.
+    - What is stored in the cache? Keys = requests & Values = responses from the server.
 1. After the service worker is registered, the service worker becomes active and the browser will fire an `activate event`. The service worker can listen for this event as well.
     - Once the service worker is active, it can access all the files within its scope and listen for events. This includes fetch/http requests.
 1. When page is reloaded/refreshed, the service worker is still registered and won't re-install. But if changes have been made to service worker file since the last page load, then the service worker will be re-installed. However, the old service worker will remain active (the new service worker remains **in waiting** status) until all instances of the app are closed (e.g. app is closed or all tabs are closed in the browser). At that point, the new service worker will become active at the next app open.
 1. `Fetch event` is another type of event that the service worker can listen for. The service worker is another layer between the app and the server. This is useful when data is cached in the browser to provide a quicker experience for the user, instead of waiting for a request to come back from the server the app can used cached assets/data. This is also useful for when the app is opened offline, to provide (some) usability when not connected to the network.
 
-### **Service Worker Dev Options**
-- In Chrome Inspector, under Application tab: enabled "Update on Reload" option for Service Worker changes. This is to help streamline development and prevent having to close application every time a change is made to sw.js to implement changes.
-- Chrome Lighthouse Audit: Audit/Lighthouse option in Inspector. Check 'Progressive Web App' and 'Generate Report' and Chrome will perform audit of application 🎉
+
+### **Service Worker Dev Options in Chrome**
+- In Chrome Dev Tools, under Application tab: enabled "Update on Reload" option for Service Worker changes. This is to help streamline development and prevent having to close application every time a change is made to sw.js to implement changes.
+- Chrome Lighthouse Audit: Audit/Lighthouse option in Chrome Dev Tools. Check 'Progressive Web App' and 'Generate Report' and Chrome will perform audit of application 🎉
     - Useful tool to use as a checklist to make sure app meets PWA requirements
     - Good practice to audit app periodically 
 - To develop caching with service workers and test 'offline' in browser:
-    - Set network offline in either 1) Application tab --> Service Workers --> check 'Offline' or 2) Network tab --> set 'Online' to 'Offline'.
-    - Disable cache in browser (which is not directly controlled by devs and manages itself) under the 'Network' tab. Want to develop cache storage by using service workers.
+    - Set network offline by doing either of the following:
+        - Application tab --> Service Workers --> check 'Offline' 
+        - Network tab --> set 'Online' to 'Offline'.
+    - Check 'Disable cache' in browser (which is not directly controlled by devs and manages itself) under the 'Network' tab. Want to develop cache storage by using service workers.
