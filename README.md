@@ -56,3 +56,6 @@ You want to place your service worker js file in the root directory of your proj
 - Chrome Lighthouse Audit: Audit/Lighthouse option in Inspector. Check 'Progressive Web App' and 'Generate Report' and Chrome will perform audit of application 🎉
     - Useful tool to use as a checklist to make sure app meets PWA requirements
     - Good practice to audit app periodically 
+- To develop caching with service workers and test 'offline' in browser:
+    - Set network offline in either 1) Application tab --> Service Workers --> check 'Offline' or 2) Network tab --> set 'Online' to 'Offline'.
+    - Disable cache in browser (which is not directly controlled by devs and manages itself) under the 'Network' tab. Want to develop cache storage by using service workers.
