@@ -68,7 +68,7 @@ You want to place your service worker js file in the root directory of your proj
         - But if a user does navigate to a page outside of the cached static assets while online, it's beneficial to dynamically add those assets. That way they can have access to the assets if they were to ever go offline.
         - We want to store these dynamic assets in a different cache than our static assets. This way we keep our app shell separate from any other dynamic assets.
         - We can dynamically cache assets in the `fetch event` and can build off the resumed fetch request/response from the server. Use the .put() method to store request/response as key/value pair and return the initial fetch response back to the browser.
-        - Make sure to check on versioning of dynamic cache in `activate event` and include it as an item to keep when checking on caches. Do not want to unintentionally delete dynamic cache from cache storage.
+        - Make sure to check on versioning of dynamic cache in `activate event` and make sure to include condition to prevent dynamic cache from being filtered as a cache to delete from cache storage.
     3. Offline Fallback Response
         - If user tries to access a page asset offline that is not cached already, then the default is get an error page from the browser. This looks terrible and makes the app look like it's crashed.
         - Instead, make a fallback offline page that can be served up for this scenario. Much better user experience.
