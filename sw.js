@@ -63,6 +63,10 @@ self.addEventListener('fetch', evt => {
           })
         });
       })
-      .catch(() => caches.match('/pages/fallback.html'))  // If asset is not found in any caches and the user is offline, then the Promise will fail and we'll handle this by serving up the fallback page to the user.
+      .catch(() => {
+        if(evt.request.url.indexOf('.html') > -1) {    // Added conditional here to only serve up this fallback page if the user is trying to access a page offline that they haven't visited before. Don't want to serve this page everytime an asset, such as an image or css, cannot be fetched. 
+          return caches.match('/pages/fallback.html')  // If page asset is not found in any caches and the user is offline, then the Promise will fail and we'll handle this by serving up the fallback page to the user.
+        }
+      })  
   );
 });
