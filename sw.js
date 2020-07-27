@@ -1,4 +1,4 @@
-const staticCacheName = 'site-static'; // This is the name of the cache that we can see in the browser
+const staticCacheName = 'site-static-v2'; // This is the name of the cache that we can see in the browser
 const assets = [
   '/',
   '/index.html',
@@ -28,6 +28,17 @@ self.addEventListener('install', evt => {
 // activate event
 self.addEventListener('activate', evt => {
   // console.log('service worker has been activated', evt);
+  // In order to properly implement cache versioning, we need to remove old caches from the browser. When a new instance of the app is opened, then the latest changes to service worker (and potentially updated static assets) are ready to be activated.
+  evt.waitUntil(
+    caches.keys()   // This returns array of keys cache storage, which are the cacheStaticNames
+      .then(keys => {
+        return Promise.all(   // waitUntil() method expects a single promise response, but we expect multiple keys in cache storage to check/delete. Use Promise.all() to achieve desired single promise response.
+          keys
+            .filter(key => key !== staticCacheName)   // Take array of keys and filter out all staticCacheName's that are not the current staticCacheName and put into new array
+            .map(key => caches.delete(key))           // Map through array of old staticCacheName's and delete each key
+        )
+      })
+  );
 });
 
 // fetch event
