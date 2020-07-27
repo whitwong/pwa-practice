@@ -1,5 +1,5 @@
 const staticCacheName = 'site-static-v2'; // This is the name of the cache that we can see in the browser
-const dynamicCache = 'site-dynamic-v1';
+const dynamicCacheName = 'site-dynamic-v1';
 const assets = [
   '/',
   '/index.html',
@@ -10,7 +10,8 @@ const assets = [
   '/css/materialize.min.css',
   '/img/dish.png',
   'https://fonts.googleapis.com/icon?family=Material+Icons',
-  'https://fonts.gstatic.com/s/materialicons/v53/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2'
+  'https://fonts.gstatic.com/s/materialicons/v53/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2',
+  '/pages/fallback.html'
 ];
 
 // install service worker
@@ -35,7 +36,7 @@ self.addEventListener('activate', evt => {
       .then(keys => {
         return Promise.all(   // waitUntil() method expects a single promise response, but we expect multiple keys in cache storage to check/delete. Use Promise.all() to achieve desired single promise response.
           keys
-            .filter(key => key !== staticCacheName)   // Take array of keys and filter out all staticCacheName's that are not the current staticCacheName and put into new array
+            .filter(key => key !== staticCacheName && key !== dynamicCacheName)   // Take array of keys and filter out all staticCacheName's that are not the current staticCacheName and put into new array
             .map(key => caches.delete(key))           // Map through array of old staticCacheName's and delete each key
         )
       })
@@ -52,7 +53,7 @@ self.addEventListener('fetch', evt => {
         // If there is a match, then cached asset is returned. If not a match then an empty response is returned, so fetch request from the server.
         // Now go ahead and store the request/response from the server into a dynamic cache for user to access later.
         return cacheRes || fetch(evt.request).then(fetchRes => {
-          return caches.open(dynamicCache).then(cache => {
+          return caches.open(dynamicCacheName).then(cache => {
             // Use .put() method to add the req/res to dynamicCache. 
             // We use .put() method instead of .add() or .addAll() because those methods make request to the server to get those assets and then store in the cache. 
             // In our case, we already made a request to the server and got a response back, so instead we want to use .put() method to put req/res into the cache.
@@ -62,5 +63,6 @@ self.addEventListener('fetch', evt => {
           })
         });
       })
+      .catch(() => caches.match('/pages/fallback.html'))  // If asset is not found in any caches and the user is offline, then the Promise will fail and we'll handle this by serving up the fallback page to the user.
   );
 });
