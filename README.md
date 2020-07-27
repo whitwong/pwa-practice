@@ -59,9 +59,15 @@ You want to place your service worker js file in the root directory of your proj
         - To fix this, add functionality to `activate event` in order to remove old cache(s). Old version of cache(s) will persist until user closes all instances of app. When app is reopened, new version of service worker (which was **in waiting** status) is activated and latest version of cached assets will be used because old caches will be deleted. 
 1. When page is reloaded/refreshed, the service worker is still registered and won't re-install. But if changes have been made to service worker file since the last page load, then the service worker will be re-installed. However, the old service worker will remain active (the new service worker remains **in waiting** status) until all instances of the app are closed (e.g. app is closed or all tabs are closed in the browser). At that point, the new service worker will become active at the next app open.
 1. `Fetch event` is another type of event that the service worker can listen for. The service worker is another layer between the app and the server. This is useful when data is cached in the browser to provide a quicker experience for the user, instead of waiting for a request to come back from the server the app can used cached assets/data. This is also useful for when the app is opened offline, to provide (some) usability when not connected to the network.
-    - Intercept fetch requests to the server and check to see if there are pre-cached assets in the `fetch event` that match the requst. 
-    - If there is a match, pause request to the server and return the cached resource instead. 
-    - If there isn't a match, resume request to server.
+    1. Fetch cached static assets (app shell):
+        - Intercept fetch requests to the server and check to see if there are pre-cached assets in the `fetch event` that match the requst. 
+        - If there is a match, pause request to the server and return the cached resource instead. 
+        - If there isn't a match, resume request to server.
+    2. Dynamic Caching
+        - Don't want to add every page/asset in app to static assets cache on initial load of app. This can increase load time and slow down response to user (bad user experience). Also doesn't makes sense to load every asset because user may never navigate or use particular features and it's a waste of resources to have assets cached that the user may never see. 
+        - But if a user does navigate to a page outside of the cached static assets while online, it's beneficial to dynamically add those assets. That way they can have access to the assets if they were to ever go offline.
+        - We want to store these dynamic assets in a different cache than our static assets. This way we keep our app shell separate from any other dynamic assets.
+        - We can dynamically cache assets in the `fetch event` and can build off the resumed fetch request/response from the server. Use the .put() method to store request/response as key/value pair and return the initial fetch response back to the browser.
 
 
 ### **Service Worker Dev Options in Chrome**

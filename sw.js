@@ -1,4 +1,5 @@
 const staticCacheName = 'site-static-v2'; // This is the name of the cache that we can see in the browser
+const dynamicCache = 'site-dynamic-v1';
 const assets = [
   '/',
   '/index.html',
@@ -48,8 +49,18 @@ self.addEventListener('fetch', evt => {
   evt.respondWith(
     caches.match(evt.request)  // Check to see if there's a resource in the app cache that matches event object (evt) request.
       .then(cacheRes => {
-        // If there is a match, then asset is returned. If not a match, then an empty response is returned so fetch request from the server.
-        return cacheRes || fetch(evt.request);
+        // If there is a match, then cached asset is returned. If not a match then an empty response is returned, so fetch request from the server.
+        // Now go ahead and store the request/response from the server into a dynamic cache for user to access later.
+        return cacheRes || fetch(evt.request).then(fetchRes => {
+          return caches.open(dynamicCache).then(cache => {
+            // Use .put() method to add the req/res to dynamicCache. 
+            // We use .put() method instead of .add() or .addAll() because those methods make request to the server to get those assets and then store in the cache. 
+            // In our case, we already made a request to the server and got a response back, so instead we want to use .put() method to put req/res into the cache.
+            // .put() takes in 2 arguments: request url and response. Cannot return fetchRes to browser and use it as an argument in .put() method, so store copy of fetchRes as the argument using .clone() method.
+            cache.put(evt.request.url, fetchRes.clone());
+            return fetchRes;    // Return fetch response to browser.
+          })
+        });
       })
-  )
+  );
 });
