@@ -1,6 +1,8 @@
 # pwa-practice
 PWA Tutorial by The Net Ninja on Youtube: https://www.youtube.com/channel/UCW5YeuERMmlnqo4oq8vwUpg
 
+
+View the app on your phone here: [https://food-ninja-pwa-8a762.firebaseapp.com/](https://food-ninja-pwa-8a762.firebaseapp.com/)
 ---
 
 This README is a container for the notes I'm keeping while going through the video tutorials.
@@ -123,3 +125,16 @@ If we used a different db than Firebase Firestore, then we would need to access 
 With data persistence enabled (see db.js) with IndexedDB, add back in caching in the `fetch event` with an added condition. Only cache assets as long as they are not data transactions with Firestore.
 
 onSnapshot() method not only listens for changes to Firebase db, but also for changes to IndexedDB. So, we can makes db changes offline and app will function the same as if there's still a connection to the network. 
+
+### **Firebase Hosting**
+- Go to Firebase console
+- Under 'Develop' menu item, go to 'Hosting' tab.
+- Select on 'Get Started' and install firebase-tools in terminal:
+`npm install -g firebase-tools`
+- Initialize the project:
+    - Run `firebase login` in terminal and follow prompts
+    - Run `firebase init` in terminal at root directory of project and follow prompts. Use existing project in Firebase. Use default directory `public`. Do **NOT** configure as single-page app. 
+- New firebase docs and `/public` directory are added. `/public` also added with 404.html and index.html files. Delete index.html from `/public` directory.
+- Add all project files to `/public` directory. Don't place firebase and .gitignore files in `/public`.
+- Run `firebase deploy`
+- Visit auto-generated domain of app or customize with your own!
