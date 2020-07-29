@@ -28,3 +28,25 @@ db.collection('recipes').onSnapshot(snapshot => {
     }
   }) 
 })
+
+// add new recipe
+// Query select <form> tag and set a 'submit' event listener on that form.
+const form = document.querySelector('form');
+form.addEventListener('submit', evt => {
+  // Prevent default action of refreshing the page
+  evt.preventDefault();
+
+  // Document to save to db
+  const recipe = {
+    title: form.title.value,
+    ingredients: form.ingredients.value
+  };
+
+  // Add document to db in specified collection
+  db.collection('recipes').add(recipe)
+    .catch(err => console.log(err))
+
+  // Reset form values to empty strings
+  form.title.value = '';
+  form.ingredients.value = '';
+});

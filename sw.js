@@ -1,5 +1,5 @@
 const staticCacheName = 'site-static-v2'; // This is the name of the cache that we can see in the browser
-const dynamicCacheName = 'site-dynamic-v1';
+const dynamicCacheName = 'site-dynamic-v2';
 const assets = [
   '/',
   '/index.html',
