@@ -105,6 +105,8 @@ When first adding and testing db with real-time data, comment out `fetch event` 
 
 onSnapshot() is a method we can use on a Firebase collection to listen for any changes to that collection. This serves as a way for us to track db changes in real-time and then update the UI accordingly (keep UI and backend in sync). 
 
+add() method on Firestore collection requires an object. This object becomes a new document in db.
+
 ### **IndexedDB**
 While offline or not connected to a network, we can't reach Firebase to serve up data. We don't want to cache data like with our html and static assets because we could be constantly sending old/outdated information.
 
@@ -115,3 +117,5 @@ If we're offline and want to add data (or perform other CRUD actions), then that
 If we used a different db than Firebase Firestore, then we would need to access IndexedDB manually and communicate with IndexedDB directly. However, since we're using Firestore it already has tools built into the library that make it simple to interact with IndexedDB (e.g. store data from db into IndexedDB and sync up automatically with Firestore on re-connection).
 
 With data persistence enabled (see db.js) with IndexedDB, add back in caching in the `fetch event` with an added condition. Only cache assets as long as they are not data transactions with Firestore.
+
+onSnapshot() method not only listens for changes to Firebase db, but also for changes to IndexedDB. So, we can makes db changes offline and app will function the same as if there's still a connection to the network. 
