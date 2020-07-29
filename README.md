@@ -100,3 +100,7 @@ Using Firebase Firestore as the db for this project. Opened project under dev ac
 Storing documents in `recipes` collection. Document ids are auto-generated. Documents have fields for:
 - title
 - ingredients
+
+When first adding and testing db with real-time data, comment out `fetch event` actions in service worker. Don't want caching to distract from initial db development.
+
+onSnapshot() is a method we can use on a Firebase collection to listen for any changes to that collection. This serves as a way for us to track db changes in real-time and then update the UI accordingly (keep UI and backend in sync). 
