@@ -14,6 +14,19 @@ const assets = [
   '/pages/fallback.html'
 ];
 
+// Cache size limit function
+const limitCacheSize = (name, size) => {
+  caches.open(name)
+    .then(cache => {
+      cache.keys().then(keys => {   // cache.keys() will return an array of keys of the cache.
+        if(keys.length > size) {    // Check to see if the length of the array is greater than the specified limit.
+          cache.delete(keys[0])     // If the length exceeds the limit, then delete the key at the 0-index.
+            .then(limitCacheSize(name, size))   // Repeat asset deletion until # of assets meet specified limit.
+        }
+      })
+    })
+}
+
 // install service worker
 self.addEventListener('install', evt => {
   // console.log('service worker has been installed', evt);
@@ -59,6 +72,8 @@ self.addEventListener('fetch', evt => {
             // In our case, we already made a request to the server and got a response back, so instead we want to use .put() method to put req/res into the cache.
             // .put() takes in 2 arguments: request url and response. Cannot return fetchRes to browser and use it as an argument in .put() method, so store copy of fetchRes as the argument using .clone() method.
             cache.put(evt.request.url, fetchRes.clone());
+            // Limit the cache size after putting new assets in dynamic cache
+            limitCacheSize(dynamicCacheName, 15);
             return fetchRes;    // Return fetch response to browser.
           })
         });
