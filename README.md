@@ -59,6 +59,7 @@ You want to place your service worker js file in the root directory of your proj
         - To fix this, add functionality to `activate event` in order to remove old cache(s). Old version of cache(s) will persist until user closes all instances of app. When app is reopened, new version of service worker (which was **in waiting** status) is activated and latest version of cached assets will be used because old caches will be deleted. 
 1. When page is reloaded/refreshed, the service worker is still registered and won't re-install. But if changes have been made to service worker file since the last page load, then the service worker will be re-installed. However, the old service worker will remain active (the new service worker remains **in waiting** status) until all instances of the app are closed (e.g. app is closed or all tabs are closed in the browser). At that point, the new service worker will become active at the next app open.
 1. `Fetch event` is another type of event that the service worker can listen for. The service worker is another layer between the app and the server. This is useful when data is cached in the browser to provide a quicker experience for the user, instead of waiting for a request to come back from the server the app can used cached assets/data. This is also useful for when the app is opened offline, to provide (some) usability when not connected to the network.
+1. Caching
     1. Fetch cached static assets (app shell):
         - Intercept fetch requests to the server and check to see if there are pre-cached assets in the `fetch event` that match the requst. 
         - If there is a match, pause request to the server and return the cached resource instead. 
@@ -76,6 +77,9 @@ You want to place your service worker js file in the root directory of your proj
     4. Conditional Fallbacks
         - There a lot of strategies on how to handle offline behavior of an app. 
         - In this project, went over one scenario on returning a fallback html page if user tries to specifically navigate to an html page offline that was not previously cached. The behavior before adding this condition would cause the fallback page to be returned even if an asset that couldn't be retrieved offline was an image or css. Additional conditions could be made to handle these scenarios as well (e.g. send back dummy/default image as fallback).
+    5. Limit Chaching Size
+        - Dynamic caching can get bloated if assets are constantly being added and not removed. 
+        - One example of how to handle this bloating is to create a function to remove old assets to a certain limit after a new asset is added to the cache.
 
 
 ### **Service Worker Dev Options in Chrome**
