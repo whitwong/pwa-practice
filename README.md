@@ -101,6 +101,17 @@ Storing documents in `recipes` collection. Document ids are auto-generated. Docu
 - title
 - ingredients
 
-When first adding and testing db with real-time data, comment out `fetch event` actions in service worker. Don't want caching to distract from initial db development.
+When first adding and testing db with real-time data, comment out `fetch event` actions in service worker. Don't want to cache data transactions with db. We'll handle browser data storage via IndexedDB (see section below).
 
 onSnapshot() is a method we can use on a Firebase collection to listen for any changes to that collection. This serves as a way for us to track db changes in real-time and then update the UI accordingly (keep UI and backend in sync). 
+
+### **IndexedDB**
+While offline or not connected to a network, we can't reach Firebase to serve up data. We don't want to cache data like with our html and static assets because we could be constantly sending old/outdated information.
+
+Instead we can use a modern web browser feature called `IndexedDB`, which is basically a db within the browser. When we're online and getting data from our db, we can store this data (if we want to) in `IndexedDB` so that if we're offline in the future we have data we can use.
+
+If we're offline and want to add data (or perform other CRUD actions), then that data can be stored in IndexedDB. Changes in IndexedDB can then be pushed up to our Firebase db upon a re-established network connection. Likewise, any data changed in our Firebase db can then be sent to IndexedDB and update the app accordingly. Everything is synced back up.
+
+If we used a different db than Firebase Firestore, then we would need to access IndexedDB manually and communicate with IndexedDB directly. However, since we're using Firestore it already has tools built into the library that make it simple to interact with IndexedDB (e.g. store data from db into IndexedDB and sync up automatically with Firestore on re-connection).
+
+With data persistence enabled (see db.js) with IndexedDB, add back in caching in the `fetch event` with an added condition. Only cache assets as long as they are not data transactions with Firestore.
