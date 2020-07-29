@@ -93,3 +93,10 @@ You want to place your service worker js file in the root directory of your proj
         - Network tab --> set 'Online' to 'Offline'.
     - Check 'Disable cache' in browser (which is not directly controlled by devs and manages itself) under the 'Network' tab. Want to develop cache storage by using service workers.
 - While developing for cache versioning, disable/uncheck 'Update on reload' option in Application --> Service Workers.
+
+### **Firebase**
+Using Firebase Firestore as the db for this project. Opened project under dev account. Provisioned db and registered the app. Added scripts for accessing Firebase db to index.html.
+
+Storing documents in `recipes` collection. Document ids are auto-generated. Documents have fields for:
+- title
+- ingredients
