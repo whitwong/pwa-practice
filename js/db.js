@@ -18,13 +18,13 @@ db.enablePersistence()
 db.collection('recipes').onSnapshot(snapshot => {
   // console.log(snapshot.docChanges());  // Can see db changes in browser by using .docChanges() method on the snapshot object. This is returns an array of changes. [{type: "added", doc: pd, ...}, {type: "removed", doc: pd, ...}]
   snapshot.docChanges().forEach(change => {
-    // console.log(change, change.doc.data(), change.doc.id);
     if(change.type === "added") {
       // add the document data to the web page
-      renderRecipe(change.doc.data(), change.doc.id)
+      renderRecipe(change.doc.data(), change.doc.id)    // Function defined in ui.js
     }
     if(change.type === "removed") {
       // remove the document data from the web page
+      removeRecipe(change.doc.id);                      // Function defined in ui.js
     }
   }) 
 })
@@ -49,4 +49,17 @@ form.addEventListener('submit', evt => {
   // Reset form values to empty strings
   form.title.value = '';
   form.ingredients.value = '';
+});
+
+// delete recipe
+// Query select recipes class and add click event listener to items in <div> containing recipes class
+const recipeContainer = document.querySelector('.recipes');
+recipeContainer.addEventListener('click', evt => {
+  // If user selects trashcan icon, get the 'data-id' attribute of the icon from the DOM so that we can delete the correct recipe doc from db.
+  // Select the doc from recipes collection with matching id and delete doc from collection.
+  // This change is captured by onSnapshot() listener, so we can update the DOM accordingly.
+  if(evt.target.tagName === "I") {
+    const id = evt.target.getAttribute('data-id');
+    db.collection('recipes').doc(id).delete();
+  }
 });
