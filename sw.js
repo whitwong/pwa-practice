@@ -58,30 +58,30 @@ self.addEventListener('activate', evt => {
 
 // fetch event
 self.addEventListener('fetch', evt => {
-  // console.log('fetch', evt);
-  // resondWith() method allows us to pause fetch event and respond with a custom event.
-  evt.respondWith(
-    caches.match(evt.request)  // Check to see if there's a resource in the app cache that matches event object (evt) request.
-      .then(cacheRes => {
-        // If there is a match, then cached asset is returned. If not a match then an empty response is returned, so fetch request from the server.
-        // Now go ahead and store the request/response from the server into a dynamic cache for user to access later.
-        return cacheRes || fetch(evt.request).then(fetchRes => {
-          return caches.open(dynamicCacheName).then(cache => {
-            // Use .put() method to add the req/res to dynamicCache. 
-            // We use .put() method instead of .add() or .addAll() because those methods make request to the server to get those assets and then store in the cache. 
-            // In our case, we already made a request to the server and got a response back, so instead we want to use .put() method to put req/res into the cache.
-            // .put() takes in 2 arguments: request url and response. Cannot return fetchRes to browser and use it as an argument in .put() method, so store copy of fetchRes as the argument using .clone() method.
-            cache.put(evt.request.url, fetchRes.clone());
-            // Limit the cache size after putting new assets in dynamic cache
-            limitCacheSize(dynamicCacheName, 15);
-            return fetchRes;    // Return fetch response to browser.
-          })
-        });
-      })
-      .catch(() => {
-        if(evt.request.url.indexOf('.html') > -1) {    // Added conditional here to only serve up this fallback page if the user is trying to access a page offline that they haven't visited before. Don't want to serve this page everytime an asset, such as an image or css, cannot be fetched. 
-          return caches.match('/pages/fallback.html')  // If page asset is not found in any caches and the user is offline, then the Promise will fail and we'll handle this by serving up the fallback page to the user.
-        }
-      })  
-  );
+  // // console.log('fetch', evt);
+  // // resondWith() method allows us to pause fetch event and respond with a custom event.
+  // evt.respondWith(
+  //   caches.match(evt.request)  // Check to see if there's a resource in the app cache that matches event object (evt) request.
+  //     .then(cacheRes => {
+  //       // If there is a match, then cached asset is returned. If not a match then an empty response is returned, so fetch request from the server.
+  //       // Now go ahead and store the request/response from the server into a dynamic cache for user to access later.
+  //       return cacheRes || fetch(evt.request).then(fetchRes => {
+  //         return caches.open(dynamicCacheName).then(cache => {
+  //           // Use .put() method to add the req/res to dynamicCache. 
+  //           // We use .put() method instead of .add() or .addAll() because those methods make request to the server to get those assets and then store in the cache. 
+  //           // In our case, we already made a request to the server and got a response back, so instead we want to use .put() method to put req/res into the cache.
+  //           // .put() takes in 2 arguments: request url and response. Cannot return fetchRes to browser and use it as an argument in .put() method, so store copy of fetchRes as the argument using .clone() method.
+  //           cache.put(evt.request.url, fetchRes.clone());
+  //           // Limit the cache size after putting new assets in dynamic cache
+  //           limitCacheSize(dynamicCacheName, 15);
+  //           return fetchRes;    // Return fetch response to browser.
+  //         })
+  //       });
+  //     })
+  //     .catch(() => {
+  //       if(evt.request.url.indexOf('.html') > -1) {    // Added conditional here to only serve up this fallback page if the user is trying to access a page offline that they haven't visited before. Don't want to serve this page everytime an asset, such as an image or css, cannot be fetched. 
+  //         return caches.match('/pages/fallback.html')  // If page asset is not found in any caches and the user is offline, then the Promise will fail and we'll handle this by serving up the fallback page to the user.
+  //       }
+  //     })  
+  // );
 });
