@@ -28,3 +28,11 @@ const renderRecipe = (data, id) => {
   // Add recipes-html to the inner html of the recipes query selector
   recipes.innerHTML += html;
 };
+
+// Remove recipe from DOM
+const removeRecipe = (id) => {
+  // Set query selector to div containing 'recipe' class with the data-id attribute matching the id of the item we want to delete.
+  // Use remove() DOM method to delete recipe item.
+  const recipe = document.querySelector(`.recipe[data-id=${id}]`);
+  recipe.remove();
+};

@@ -105,7 +105,11 @@ When first adding and testing db with real-time data, comment out `fetch event` 
 
 onSnapshot() is a method we can use on a Firebase collection to listen for any changes to that collection. This serves as a way for us to track db changes in real-time and then update the UI accordingly (keep UI and backend in sync). 
 
+doc() method on Firestore collection will find document with specified parameters. In this app, we use unique id to find the document.
+
 add() method on Firestore collection requires an object. This object becomes a new document in db.
+
+delete() method on Firestore collection will delete document(s) from the database.
 
 ### **IndexedDB**
 While offline or not connected to a network, we can't reach Firebase to serve up data. We don't want to cache data like with our html and static assets because we could be constantly sending old/outdated information.
