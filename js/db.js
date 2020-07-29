@@ -1,3 +1,17 @@
+// offline data
+// This is doing all the legwork for data persistence and db syncing for offline behavior and when connection is re-established.
+db.enablePersistence()
+  .catch(err => {
+    if(err.code === 'failed-precondition'){
+      // probably multiple tabs open at once
+      console.log('persistence failed - multiple tabs opened');
+    }
+    else if(err.code === 'unimplemented'){
+      // lack of browser support
+      console.log('persistence is not available - lack of browser support');
+    }
+  })
+
 // real-time listener
 // Reference db and call on 'recipes' collection set up in Firebase.
 // onSnapshot() method is a listener on the 'recipes' collection. If there is a change to the collection, then Firebase will return a snapshot of the db at that moment.
